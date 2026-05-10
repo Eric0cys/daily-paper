@@ -1,0 +1,29 @@
+name: Daily Multimodal Causal Papers
+
+on:
+  schedule:
+    - cron: '0 8 * * *'  # 每天早上 8 点（UTC）执行，换成你当地的 UTC 偏移
+  workflow_dispatch:      # 允许手动触发，方便测试
+
+jobs:
+  paper-digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: 安装依赖
+        run: pip install arxiv requests
+      - name: 搜索并精读论文
+        run: python scripts/fetch_and_summarize.py
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          PAPER_KEYWORD: "multimodal causal inference"
+      - name: 发送邮件
+        run: python scripts/send_email.py
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
