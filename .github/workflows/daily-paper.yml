@@ -2,8 +2,8 @@ name: Daily Multimodal Causal Papers
 
 on:
   schedule:
-    - cron: '0 8 * * *'  # 每天早上 8 点（UTC）执行，换成你当地的 UTC 偏移
-  workflow_dispatch:      # 允许手动触发，方便测试
+    - cron: '0 0 * * *'   # UTC 8:00，如需北京时间早上8点，改为 '0 0 * * *' (UTC 0:00)
+  workflow_dispatch:
 
 jobs:
   paper-digest:
@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: '3.10'
       - name: 安装依赖
-        run: pip install arxiv requests
+        run: pip install arxiv requests google-generativeai  # 若使用 Gemini
       - name: 搜索并精读论文
         run: python scripts/fetch_and_summarize.py
         env:
@@ -24,6 +24,6 @@ jobs:
       - name: 发送邮件
         run: python scripts/send_email.py
         env:
-          EMAIL_USER: ${{ secrets.EMAIL_USER }}
-          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
-          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          MAIL_USER: ${{ secrets.MAIL_USER }}          # 改为匹配你的 Secret 名称
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
