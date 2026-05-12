@@ -2,7 +2,7 @@ name: Daily Multimodal Causal Papers
 
 on:
   schedule:
-    - cron: '0 0 * * *'   # UTC 8:00，如需北京时间早上8点，改为 '0 0 * * *' (UTC 0:00)
+    - cron: '0 0 * * *'      # 北京时间早上 8 点 (UTC 0:00)
   workflow_dispatch:
 
 jobs:
@@ -10,20 +10,39 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: 设置 Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+
       - name: 安装依赖
-        run: pip install arxiv requests google-generativeai  # 若使用 Gemini
-      - name: 搜索并精读论文
-        run: python scripts/fetch_and_summarize.py
+        run: pip install arxiv requests google-generativeai
+
+      - name: 创建数据目录
+        run: mkdir -p data
+
+      # 步骤1：拉取论文元数据
+      - name: 拉取 arXiv 论文
+        run: python scripts/fetch_papers.py
+        env:
+          PAPER_KEYWORD: "multimodal causal inference"
+          MAX_RESULTS: 20          # 可选，根据需要调整
+
+      # 步骤2：调用 AI 生成精读摘要
+      - name: 生成精读摘要
+        run: python scripts/summarize_papers.py
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          PAPER_KEYWORD: "multimodal causal inference"
+
+      # 可选：调试，查看生成的文件
+      - name: 列出生成的文件
+        run: ls -la data/
+
+      # 步骤3：发送邮件
       - name: 发送邮件
         run: python scripts/send_email.py
         env:
-          MAIL_USER: ${{ secrets.MAIL_USER }}          # 改为匹配你的 Secret 名称
+          MAIL_USER: ${{ secrets.MAIL_USER }}
           MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
