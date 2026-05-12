@@ -31,7 +31,7 @@ jobs:
 
       # 步骤2：调用 AI 生成精读摘要
       - name: 生成精读摘要
-        run: python scripts/summarize_papers.py
+        run: python scripts/summerize_papers.py
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
