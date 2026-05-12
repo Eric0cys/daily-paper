@@ -61,7 +61,7 @@ def send_email_report():
     
     # 检查必需的环境变量
     if not all([sender, password, receiver]):
-        print("错误：请设置环境变量 EMAIL_USER, EMAIL_PASS, EMAIL_TO")
+        print("错误：请设置环境变量 MAIL_USER, MAIL_PASSWORD, MAIL_TO")
         sys.exit(1)
     
     # 5. 构建邮件
