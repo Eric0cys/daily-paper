@@ -58,7 +58,7 @@ def send_email_report():
         msg.attach(part)
     
     # 发送邮件
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+    with smtplib.SMTP_SSL("smtp.qq.com", 465) as server:
         server.login(sender, password)
         server.sendmail(sender, receiver, msg.as_string())
     
