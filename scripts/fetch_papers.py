@@ -5,16 +5,16 @@ from datetime import datetime
 
 def fetch_papers():
     # 从环境变量读取搜索类别（如 "cs.AI+cs.LG"）
-    category = os.getenv("ARXIV_CATEGORY", "cs.AI+cs.LG+stat.ML")
+    keyword = os.getenv("PAPER_KEYWORD", "multimodal causal inference")
     max_results = int(os.getenv("MAX_RESULTS", 10))
     
     # 构建查询：按提交日期倒序，限制数量
     client = arxiv.Client()
-    search = arxiv.Search(
-        query=f"cat:{category}",
-        max_results=max_results,
-        sort_by=arxiv.SortCriterion.SubmittedDate,
-        sort_order=arxiv.SortOrder.Descending
+    keyword = os.getenv("PAPER_KEYWORD", "multimodal causal inference")
+    search = arxiv.Search( query=f"abs:'{keyword}'",
+                          max_results=max_results,
+                          sort_by=arxiv.SortCriterion.SubmittedDate,
+                          sort_order=arxiv.SortOrder.Descending
     )
     
     papers = []
